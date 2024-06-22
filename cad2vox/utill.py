@@ -153,7 +153,7 @@ def crop_center(img, cropx, cropy, cropz):
     so cropx = 3 means drop the first and last two rows in x
 
     """
-    y, x, z = img.shape
+    x, y, z = img.shape
 
     if x < cropx:
         cropx = 0

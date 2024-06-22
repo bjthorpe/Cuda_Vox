@@ -229,6 +229,7 @@ def voxelise(input_file, output_file, **kwargs):
 
 
 def write_image(output_file, vox, im_format=None, Orientation="XY"):
+    print(np.shape(vox))
     if im_format:
         if Orientation == "XY":
             for I in range(0, np.shape(vox)[2]):
@@ -255,13 +256,10 @@ def write_image(output_file, vox, im_format=None, Orientation="XY"):
     else:
         im_output = "{}.tiff".format(output_file)
         if Orientation == "XY":
-            with tf.TiffWriter(im_output) as f:
-                for I in range(0, np.shape(vox)[2]):
-                    f.write(vox[:, :, I], contiguous=True)
+                tf.imwrite(im_output,vox,bigtiff=True, append=True)
         elif Orientation == "XZ":
-            with tf.TiffWriter(im_output) as f:
-                for I in range(0, np.shape(vox)[1]):
-                    f.write(vox[:, I, :], contiguous=True)
+               vox = np.rot90(vox)
+               tf.imwrite(im_output,vox,bigtiff=True, append=True)
         elif Orientation == "YZ":
             with tf.TiffWriter(im_output) as f:
                 for I in range(0, np.shape(vox)[0]):
