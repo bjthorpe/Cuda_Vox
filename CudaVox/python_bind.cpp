@@ -16,16 +16,22 @@
 #include "timer.h"
 #include "cpu_voxelizer.h"
 
+
+#ifdef WITH_CUDA
+xt::pyarray<unsigned short> voxelise_GPU(Mesh* themesh, voxinfo info, unsigned int* vtable,
+	size_t vtable_size, bool use_tetra, bool useThrustPath, bool solid);
+bool Check_CUDA();
+#else
 // Forward declaration of function, this function is needed in both CUDA and non-CUDA builds. For builds using CUDA
 // it is defined in "gpu_voxelizer.h". However, that file contains CUDA specific code we don't use in the non-CUDA case.
 // Therefore in NON-CUDA builds we simply define a dummy function here to satisfy the compiler. This is OK since it will
 // never be called due to the way in which we have setup the check_CUDA function (see comments in managed_mem.h for details).
 // The reason for this insanity is to allow for a unified source file when compiling with and without CUDA which will,
 // hopefully, make future development easier as we only need to maintain one version.
-xt::pyarray<unsigned short> voxelise_GPU(Mesh* themesh ,voxinfo info, unsigned int* vtable,
-					size_t vtable_size,bool use_tetra, bool useThrustPath, bool solid);
-#ifdef WITH_CUDA
-bool Check_CUDA();
+xt::pyarray<unsigned short> voxelise_GPU(Mesh* themesh, voxinfo info, unsigned int* vtable,
+	size_t vtable_size, bool use_tetra, bool useThrustPath, bool solid){
+	return 0;
+}
 #endif
 /////
 
@@ -41,9 +47,9 @@ xt::pyarray<unsigned short> write_greyscale(xt::pyarray<unsigned short> result,v
   fprintf(stdout, "writing greyscale values to array\n");
   
 #pragma omp parallel for 
-  for (size_t x = 0; x < info.gridsize.x; x++) {
-    for (size_t y = 0; y < info.gridsize.y; y++) {
-      for (size_t z = 0; z < info.gridsize.z; z++) {
+  for (signed int x = 0; x < info.gridsize.x; x++) {
+    for (signed int y = 0; y < info.gridsize.y; y++) {
+      for (signed int z = 0; z < info.gridsize.z; z++) {
 	voxels_seen++;
 	if (voxels_seen == write_stats_25) { fprintf(stdout, "25%%...\n");}
 	else if (voxels_seen == write_stats_25 * size_t(2)) { fprintf(stdout, "50%%...\n");}

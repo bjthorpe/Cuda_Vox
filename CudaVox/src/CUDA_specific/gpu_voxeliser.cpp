@@ -24,9 +24,9 @@ xt::pyarray<unsigned short> write_greyscale_GPU(xt::pyarray<unsigned short> resu
   fprintf(stdout, "writing greyscale values to array\n");
   
 #pragma omp parallel for 
-  for (size_t x = 0; x < info.gridsize.x; x++) {
-    for (size_t y = 0; y < info.gridsize.y; y++) {
-      for (size_t z = 0; z < info.gridsize.z; z++) {
+  for (int x = 0; x < info.gridsize.x; x++) {
+    for (int y = 0; y < info.gridsize.y; y++) {
+      for (int z = 0; z < info.gridsize.z; z++) {
 	voxels_seen++;
 	if (voxels_seen == write_stats_25) { fprintf(stdout, "25%%...\n");}
 	else if (voxels_seen == write_stats_25 * size_t(2)) { fprintf(stdout, "50%%...\n");}

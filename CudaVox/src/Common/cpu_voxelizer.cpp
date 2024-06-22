@@ -5,8 +5,13 @@
 #include <xtensor/xio.hpp>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xview.hpp>
-
+#include <glm/glm.hpp>
 #define float_error 0.000001
+#ifdef _WIN_32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#endif
 
 namespace cpu_voxelizer {
 
@@ -122,7 +127,7 @@ bool PointInTetrahedron(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3,glm::vec3 v4,glm
 
 			// COMPUTE TRIANGLE BBOX IN GRID
 			// Triangle bounding box in world coordinates is min(v0,v1,v2) and max(v0,v1,v2)
-			AABox<glm::vec3> t_bbox_world(glm::min(v0, glm::min(v1, v2)), glm::max(v0, glm::max(v1, v2)));
+			AABox<glm::vec3> t_bbox_world((glm::min)(v0, (glm::min)(v1, v2)), (glm::max)(v0, (glm::max)(v1, v2)));
 			// Triangle bounding box in voxel grid coordinates is the world bounding box divided by the grid unit vector
 			AABox<glm::ivec3> t_bbox_grid;
 			t_bbox_grid.min = glm::clamp(t_bbox_world.min / info.unit, glm::vec3(0.0f, 0.0f, 0.0f), grid_max);
@@ -145,9 +150,9 @@ bool PointInTetrahedron(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3,glm::vec3 v4,glm
 				n_xy_e1 = -n_xy_e1;
 				n_xy_e2 = -n_xy_e2;
 			}
-			float d_xy_e0 = (-1.0f * glm::dot(n_xy_e0, glm::vec2(v0.x, v0.y))) + glm::max(0.0f, info.unit.x * n_xy_e0[0]) + glm::max(0.0f, info.unit.y * n_xy_e0[1]);
-			float d_xy_e1 = (-1.0f * glm::dot(n_xy_e1, glm::vec2(v1.x, v1.y))) + glm::max(0.0f, info.unit.x * n_xy_e1[0]) + glm::max(0.0f, info.unit.y * n_xy_e1[1]);
-			float d_xy_e2 = (-1.0f * glm::dot(n_xy_e2, glm::vec2(v2.x, v2.y))) + glm::max(0.0f, info.unit.x * n_xy_e2[0]) + glm::max(0.0f, info.unit.y * n_xy_e2[1]);
+			float d_xy_e0 = (-1.0f * glm::dot(n_xy_e0, glm::vec2(v0.x, v0.y))) + (glm::max)(0.0f, info.unit.x * n_xy_e0[0]) + (glm::max)(0.0f, info.unit.y * n_xy_e0[1]);
+			float d_xy_e1 = (-1.0f * glm::dot(n_xy_e1, glm::vec2(v1.x, v1.y))) + (glm::max)(0.0f, info.unit.x * n_xy_e1[0]) + (glm::max)(0.0f, info.unit.y * n_xy_e1[1]);
+			float d_xy_e2 = (-1.0f * glm::dot(n_xy_e2, glm::vec2(v2.x, v2.y))) + (glm::max)(0.0f, info.unit.x * n_xy_e2[0]) + (glm::max)(0.0f, info.unit.y * n_xy_e2[1]);
 			// YZ plane
 			glm::vec2 n_yz_e0(-1.0f * e0.z, e0.y);
 			glm::vec2 n_yz_e1(-1.0f * e1.z, e1.y);
@@ -157,9 +162,9 @@ bool PointInTetrahedron(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3,glm::vec3 v4,glm
 				n_yz_e1 = -n_yz_e1;
 				n_yz_e2 = -n_yz_e2;
 			}
-			float d_yz_e0 = (-1.0f * glm::dot(n_yz_e0, glm::vec2(v0.y, v0.z))) + glm::max(0.0f, info.unit.y * n_yz_e0[0]) + glm::max(0.0f, info.unit.z * n_yz_e0[1]);
-			float d_yz_e1 = (-1.0f * glm::dot(n_yz_e1, glm::vec2(v1.y, v1.z))) + glm::max(0.0f, info.unit.y * n_yz_e1[0]) + glm::max(0.0f, info.unit.z * n_yz_e1[1]);
-			float d_yz_e2 = (-1.0f * glm::dot(n_yz_e2, glm::vec2(v2.y, v2.z))) + glm::max(0.0f, info.unit.y * n_yz_e2[0]) + glm::max(0.0f, info.unit.z * n_yz_e2[1]);
+			float d_yz_e0 = (-1.0f * glm::dot(n_yz_e0, glm::vec2(v0.y, v0.z))) + (glm::max)(0.0f, info.unit.y * n_yz_e0[0]) + (glm::max)(0.0f, info.unit.z * n_yz_e0[1]);
+			float d_yz_e1 = (-1.0f * glm::dot(n_yz_e1, glm::vec2(v1.y, v1.z))) + (glm::max)(0.0f, info.unit.y * n_yz_e1[0]) + (glm::max)(0.0f, info.unit.z * n_yz_e1[1]);
+			float d_yz_e2 = (-1.0f * glm::dot(n_yz_e2, glm::vec2(v2.y, v2.z))) + (glm::max)(0.0f, info.unit.y * n_yz_e2[0]) + (glm::max)(0.0f, info.unit.z * n_yz_e2[1]);
 			// ZX plane
 			glm::vec2 n_zx_e0(-1.0f * e0.x, e0.z);
 			glm::vec2 n_zx_e1(-1.0f * e1.x, e1.z);
@@ -169,9 +174,9 @@ bool PointInTetrahedron(glm::vec3 v1, glm::vec3 v2,glm::vec3 v3,glm::vec3 v4,glm
 				n_zx_e1 = -n_zx_e1;
 				n_zx_e2 = -n_zx_e2;
 			}
-			float d_xz_e0 = (-1.0f * glm::dot(n_zx_e0, glm::vec2(v0.z, v0.x))) + glm::max(0.0f, info.unit.x * n_zx_e0[0]) + glm::max(0.0f, info.unit.z * n_zx_e0[1]);
-			float d_xz_e1 = (-1.0f * glm::dot(n_zx_e1, glm::vec2(v1.z, v1.x))) + glm::max(0.0f, info.unit.x * n_zx_e1[0]) + glm::max(0.0f, info.unit.z * n_zx_e1[1]);
-			float d_xz_e2 = (-1.0f * glm::dot(n_zx_e2, glm::vec2(v2.z, v2.x))) + glm::max(0.0f, info.unit.x * n_zx_e2[0]) + glm::max(0.0f, info.unit.z * n_zx_e2[1]);
+			float d_xz_e0 = (-1.0f * glm::dot(n_zx_e0, glm::vec2(v0.z, v0.x))) + (glm::max)(0.0f, info.unit.x * n_zx_e0[0]) + (glm::max)(0.0f, info.unit.z * n_zx_e0[1]);
+			float d_xz_e1 = (-1.0f * glm::dot(n_zx_e1, glm::vec2(v1.z, v1.x))) + (glm::max)(0.0f, info.unit.x * n_zx_e1[0]) + (glm::max)(0.0f, info.unit.z * n_zx_e1[1]);
+			float d_xz_e2 = (-1.0f * glm::dot(n_zx_e2, glm::vec2(v2.z, v2.x))) + (glm::max)(0.0f, info.unit.x * n_zx_e2[0]) + (glm::max)(0.0f, info.unit.z * n_zx_e2[1]);
 
 			// test possible grid boxes for overlap
 			for (int z = t_bbox_grid.min.z; z <= t_bbox_grid.max.z; z++) {
@@ -335,8 +340,8 @@ void  cpu_voxelize_surface_solid(voxinfo info, Mesh* themesh, unsigned int* voxe
 
 			// COMPUTE TRIANGLE BBOX IN GRID
 			// Triangle bounding box in world coordinates is min(v0,v1,v2) and max(v0,v1,v2)
-			glm::vec2 bbox_max = glm::max(v0_yz, glm::max(v1_yz, v2_yz));
-			glm::vec2 bbox_min = glm::min(v0_yz, glm::min(v1_yz, v2_yz));
+			glm::vec2 bbox_max = (glm::max)(v0_yz, (glm::max)(v1_yz, v2_yz));
+			glm::vec2 bbox_min = (glm::min)(v0_yz, (glm::min)(v1_yz, v2_yz));
 
 			glm::vec2 bbox_max_grid = glm::vec2(floor(bbox_max.x / info.unit.y - 0.5), floor(bbox_max.y / info.unit.z - 0.5));
 			glm::vec2 bbox_min_grid = glm::vec2(ceil(bbox_min.x / info.unit.y - 0.5), ceil(bbox_min.y / info.unit.z - 0.5));
@@ -423,7 +428,7 @@ void  cpu_voxelize_surface_solid(voxinfo info, Mesh* themesh, unsigned int* voxe
 	        
 			// COMPUTE TETRA BBOX IN GRID COORDINATES
 			// Tetra bounding box in world coordinates is min(A,B,C,D) and max(A,B,C,D)
-			AABox<glm::vec3> t_bbox_world(glm::min(A, glm::min(B, glm::min(C,D))),glm::max(A, glm::max(B, glm::max(C,D))));
+			AABox<glm::vec3> t_bbox_world((glm::min)(A, (glm::min)(B, (glm::min)(C,D))),(glm::max)(A, (glm::max)(B, (glm::max)(C,D))));
 			// Triangle bounding box in voxel grid coordinates is the world bounding box divided by the grid unit vector
 			AABox<glm::ivec3> t_bbox_grid;
 			t_bbox_grid.min = glm::clamp(t_bbox_world.min / info.unit, glm::vec3(0.0f, 0.0f, 0.0f), grid_max);
