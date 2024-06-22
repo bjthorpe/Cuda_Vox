@@ -27,7 +27,7 @@ def cleanup():
 ############## Tests for setting asymmetric gridsize
 def test_asym_grid(cleanup):
 # the code should run given a non symetric grid
-    cad2vox.voxelise("inputs/AMAZE_Sample.med","outputs/AMAZE_assym",gridsize = [150,120,110])
+    cad2vox.voxelise("inputs/AMAZE_Sample.med","outputs/AMAZE_assym",gridsize = [150,120,110],Orientation='XY')
     output = tf.imread("outputs/AMAZE_assym.tiff")
     shape_test = np.shape(output)
     assert shape_test == (150,120,110)
